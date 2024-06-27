@@ -1,0 +1,25 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0" controller="SiteLoginController">
+<apex:slds />
+
+<div class="slds-scope" style="height:100vh">
+    <div class="slds-align_absolute-center" style="height:100vh">
+        <div class="slds-container_x-large slds-container_center">
+            <div class="slds-box slds-theme_default">
+                <apex:form styleClass="slds-form slds-form_stacked" id="loginForm">
+                    <apex:inputText required="true" id="login-email" styleClass="slds-input un" value="{!username}" label="Username"/>
+                    <apex:inputSecret id="login-password" styleClass="slds-input pw" value="{!password}" label="Password"/>
+                    <apex:commandButton action="{!login}" value="Sign in" id="login-submit" styleClass="slds-button slds-button_brand"/>
+                </apex:form>
+            </div>
+            <apex:pageMessages />
+        </div>
+    </div>
+</div>   
+  
+<!-- jQuery script to show the Username and password labels on respective fields -->
+<script type="text/javascript">
+    document.querySelector('.un').setAttribute('placeholder', 'Username or Email');
+    document.querySelector('.pw').setAttribute('placeholder', 'Password');
+</script>   
+
+</apex:page>

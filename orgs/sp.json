@@ -1,0 +1,50 @@
+{
+    "orgName": "IdP Subscriber Org",
+    "edition": "Developer",
+    "features": [
+      "Communities",
+      "PersonAccounts",
+      "IdentityProvisioningFeatures",
+      "SalesforceIdentityForCommunities"
+    ],
+    "hasSampleData": true,
+    "settings": {
+      "communitiesSettings": {
+          "enableNetworksEnabled": true
+      },
+      "lightningExperienceSettings": {
+        "enableS1DesktopEnabled": true
+      },
+      "chatterSettings": {
+        "enableChatter": true
+      },
+      "userManagementSettings": {
+        "enableNewProfileUI": true
+      },
+      "securitySettings": {
+          "enableAdminLoginAsAnyUser": true,
+          "sessionSettings": {
+              "forceRelogin": false,
+              "allowUserAuthenticationByCertificate": true
+          },
+          "passwordPolicies": {
+              "complexity": "NoRestriction",
+              "minimumPasswordLength": "5",
+              "expiration": "Never",
+              "historyRestriction": "0",
+              "questionRestriction": "None",
+              "lockoutInterval": "FifteenMinutes",
+              "maxLoginAttempts": "NoLimit"
+          },
+          "singleSignOnSettings": {
+              "enableCaseInsensitiveFederationID": true,
+              "enableSamlLogin": true,
+              "enableSamlJitProvisioning": true,
+              "enableMultipleSamlConfigs": true
+          }
+      },
+      "languageSettings": {
+        "enableTranslationWorkbench": true
+      }
+    }
+  }

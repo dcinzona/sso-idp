@@ -1,0 +1,48 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    },
+    {
+        "default": false,
+        "path": "identity/common",
+        "package": "identity-common",
+        "versionName": "ver 0.1",
+        "versionNumber": "0.1.0.NEXT",
+        "versionDescription": "Used to test SSO identity"
+    },
+    {
+        "default": false,
+        "path": "identity/idp",
+        "package": "identity-idp",
+        "versionName": "ver 0.1",
+        "versionNumber": "0.1.0.NEXT",
+        "versionDescription": "Identity Provider config (Community IdP ORG)",
+        "dependencies": [
+            {
+                "package": "identity-common",
+                "versionNumber": "0.1.0.LATEST"
+            }
+        ]
+    },
+    {
+        "default": false,
+        "path": "identity/idp-sp",
+        "package": "identity-sp",
+        "versionName": "ver 0.1",
+        "versionNumber": "0.1.0.NEXT",
+        "versionDescription": "Service Provider config (SSO ORG)",
+        "dependencies": [
+            {
+                "package": "identity-common",
+                "versionNumber": "0.1.0.LATEST"
+            }
+        ]
+    }
+  ],
+  "name": "sso",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "59.0"
+}

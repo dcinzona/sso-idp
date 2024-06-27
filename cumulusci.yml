@@ -1,0 +1,67 @@
+minimum_cumulusci_version: '3.89.0'
+project:
+    name: sso
+    package:
+        name: sso
+        api_version: '59.0'
+    git:
+        default_branch: 'main'
+    source_format: sfdx
+
+orgs:
+    scratch:
+        idp:
+            config_file: orgs/idp.json
+        sp:
+            config_file: orgs/sp.json
+tasks:
+    robot:
+        options:
+            suites: robot/sso/tests
+            options:
+                outputdir: robot/sso/results
+
+    robot_testdoc:
+        options:
+            path: robot/sso/tests
+            output: robot/sso/doc/sso_tests.html
+
+    run_tests:
+        options:
+            required_org_code_coverage_percent: 75
+    idp_connected_app:
+      class_path: tasks.idpDeploy.deployMetadata
+    sp_post_deploy:
+      class_path: tasks.spDeploy.deploySSO
+
+flows:
+  common:
+    group: identity
+    description: Create scratch orgs and deploy metadata
+    steps:
+      1:
+        task: command
+        options:
+          command: cci task run deploy --path identity/common --org idp
+      2:
+        task: command
+        options:
+          command: cci task run deploy --path identity/common --org sp
+
+  reset:
+    group: identity
+    description: Resets all scratch orgs (deleting and recreating them)
+    steps:
+      1:
+        task: command
+        options: 
+          command: cci org scratch_delete --org idp
+      2:
+        task: command
+        options: 
+          command: cci org scratch_delete --org sp
+      3:
+        task: command
+        options: 
+          command: cci flow run common --org idp
+          
