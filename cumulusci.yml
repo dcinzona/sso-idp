@@ -15,24 +15,32 @@ orgs:
         sp:
             config_file: orgs/sp.json
 tasks:
-    robot:
-        options:
-            suites: robot/sso/tests
-            options:
-                outputdir: robot/sso/results
-
-    robot_testdoc:
-        options:
-            path: robot/sso/tests
-            output: robot/sso/doc/sso_tests.html
-
-    run_tests:
-        options:
-            required_org_code_coverage_percent: 75
-    idp_connected_app:
-      class_path: tasks.idpDeploy.deployMetadata
-    sp_post_deploy:
-      class_path: tasks.spDeploy.deploySSO
+  list_changes:
+    options:
+      exclude: '^Profile,^Dashboard,^Report'
+  retrieve_changes:
+    options:
+      exclude: '^Profile,^Dashboard,^Report'
+  robot:
+      options:
+          suites: robot/sso/tests
+          options:
+              outputdir: robot/sso/results
+  robot_testdoc:
+      options:
+          path: robot/sso/tests
+          output: robot/sso/doc/sso_tests.html
+  run_tests:
+      options:
+          required_org_code_coverage_percent: 75
+  idp_connected_app:
+    class_path: tasks.idpDeploy.deployMetadata
+  sp_post_deploy:
+    class_path: tasks.spDeploy.deploySSO
+  clean_test_results:
+    class_path: cumulusci.tasks.command.Command
+    options: 
+      command: rm -rf robot/sso/results/*
 
 flows:
   common:
@@ -47,6 +55,52 @@ flows:
         task: command
         options:
           command: cci task run deploy --path identity/common --org sp
+
+  idp:
+    group: identity
+    description: Deploy IdP Config
+    steps:
+      1:
+        task: command
+        options:
+          command: cci task run deploy --path identity/idp/settings --org idp
+
+  robot_all:
+    group: identity
+    description: Set up orgs via UI
+    steps:
+      1:
+        task: command
+        options:
+          command: cci task run robot --org idp --suites robot/sso/setup/idp --options "outputdir:robot/sso/results"
+      2:
+        task: command
+        options:
+          command: cci task run robot --org sp --suites robot/sso/setup/sp --options "outputdir:robot/sso/results"
+      3:
+        task: clean_test_results
+    
+
+  config_all:
+    group: identity
+    description: deploys connected app settings and post deployment scripts
+    steps:
+      1:
+        task: command
+        options:
+          command: cci flow run idp --org idp
+      2:
+        task: command
+        options:
+          command: cci task run idp_connected_app --org idp
+      3:
+        task: command
+        options:
+          command: cci task run sp_post_deploy --org sp
+      4:
+        task: command
+        options:
+          command: cci flow run robot_all --org sp
 
   reset:
     group: identity
@@ -64,4 +118,13 @@ flows:
         task: command
         options: 
           command: cci flow run common --org idp
+      4:
+        task: command
+        options: 
+          command: cci flow run config_all --org idp
+      5:
+        task: command
+        options: 
+          command: cci org browser --org sp
+
           

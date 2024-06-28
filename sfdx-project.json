@@ -28,7 +28,7 @@
     },
     {
         "default": false,
-        "path": "identity/idp-sp",
+        "path": "identity/sp",
         "package": "identity-sp",
         "versionName": "ver 0.1",
         "versionNumber": "0.1.0.NEXT",
