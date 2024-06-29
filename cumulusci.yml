@@ -41,6 +41,8 @@ tasks:
     class_path: cumulusci.tasks.command.Command
     options: 
       command: rm -rf robot/sso/results/*
+  retrieve_cert:
+    class_path: tasks.spDeploy.RetrieveCert
 
 flows:
   common:
