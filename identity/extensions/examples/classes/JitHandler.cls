@@ -35,8 +35,9 @@ public with sharing class JitHandler implements Auth.SamlJitHandler {
             handleUser(create, u, attributes, federationIdentifier, true);
         }
 
+        Map<String, Object> context = new Map<String, Object>();
         for (JitHandlerExtension e : registry.extensions) {
-            e.run();
+            e.run(context);
         }
     }
 }

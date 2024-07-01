@@ -1,6 +1,7 @@
 public abstract class JitHandlerExtension implements JitExtensionInterface {
 
     public Integer sortOrderNumber = 100;
+    public static Map<String, Object> DEFAULT_CONTEXT = new Map<String, Object>();
 
     public JitHandlerExtension() {
         System.debug(LoggingLevel.INFO, 'JitHandlerExtension()');
@@ -15,6 +16,14 @@ public abstract class JitHandlerExtension implements JitExtensionInterface {
         return this.sortOrderNumber;
     }
 
-    public abstract void run();
+    public virtual void run() {
+        System.debug(LoggingLevel.INFO, 'abstract JitHandlerExtension.run()');
+        run(DEFAULT_CONTEXT);
+    }
+
+    public virtual void run(Map<String, Object> context){
+        System.debug(LoggingLevel.INFO, 'abstract JitHandlerExtension.run(Map<String, Object>)');
+        System.debug(LoggingLevel.INFO, context);
+    }
 
 }

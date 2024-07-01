@@ -1,3 +1,4 @@
 public interface JitExtensionInterface {
-    void run();
+    void run(Map<String, Object> context);
+    Integer sortOrder();
 }

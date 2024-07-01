@@ -32,8 +32,8 @@ private class JitExtensions_TEST {
     @isTest
     static void PermSetExtensionTest() {
         JitExtensionRegistry registry = new JitExtensionRegistry();
-        JitHandler jitHandler = new JitHandler();
         System.assertEquals(1, registry.extensions.size(), 'PermSetExtension not found');
+
         for (JitHandlerExtension ext : registry.extensions) {
             System.assertEquals(100, ext.sortOrder(), 'PermSetExtension sortOrder() != 100');
             ext.run();
