@@ -39,6 +39,20 @@
                 "versionNumber": "0.1.0.LATEST"
             }
         ]
+    },
+    {
+        "default": false,
+        "path": "identity/extensions",
+        "package": "identity-extensions",
+        "versionName": "ver 0.1",
+        "versionNumber": "0.1.0.NEXT",
+        "versionDescription": "JIT Handler Extensions Framework",
+        "dependencies": [
+            {
+                "package": "identity-common",
+                "versionNumber": "0.1.0.LATEST"
+            }
+        ]
     }
   ],
   "name": "sso",
