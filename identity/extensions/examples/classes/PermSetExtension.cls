@@ -12,4 +12,10 @@ public with sharing class PermSetExtension extends JitHandlerExtension {
         // Implementation
         System.debug(LoggingLevel.INFO, 'PermSetExtension.run(Map<String, Object>)');
     }
+
+    public override RunAfterContext runAfterContext() {
+        // Implementation
+        System.debug(LoggingLevel.INFO, 'PermSetExtension.runAfterContext()');
+        return RunAfterContext.HANDLE_JIT;
+    }
 }

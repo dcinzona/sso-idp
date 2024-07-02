@@ -28,4 +28,24 @@ public without sharing class JitExtensionRegistry {
         // get other extensions
         System.debug(LoggingLevel.INFO, this.extensions.size());
     }
+
+    public List<JitHandlerExtension> getExtensions() {
+        return this.extensions;
+    }
+
+    public List<JitHandlerExtension> getExtensions(JitHandlerExtension.RunAfterContext context) {
+        List<JitHandlerExtension> extensions = new List<JitHandlerExtension>();
+        for (JitHandlerExtension e : this.extensions) {
+            if (e.runAfterContext() == context) {
+                extensions.add(e);
+            }
+        }
+        return extensions;
+    }
+
+    public void runExtensions(JitHandlerExtension.RunAfterContext runAfter, Map<String, Object> context) {
+        for (JitHandlerExtension e : this.getExtensions(runAfter)) {
+            e.run(context);
+        }
+    }
 }
