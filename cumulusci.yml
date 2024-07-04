@@ -17,6 +17,8 @@ orgs:
 tasks:
   install_dependencies:
     class_path: tasks.installPackage.InstallPackageDeps
+  get_dependencies:
+    class_path: tasks.getDependencies.GetDependencies
   list_changes:
     options:
       exclude: '^Profile,^Dashboard,^Report'

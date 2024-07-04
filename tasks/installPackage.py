@@ -1,65 +1,19 @@
 import copy
-from math import e
-from re import sub
 from cumulusci.tasks.salesforce.install_package_version import InstallPackageVersion
 from cumulusci.tasks.sfdx import SFDXOrgTask
 from cumulusci.tasks.salesforce import BaseSalesforceApiTask
 from cumulusci.salesforce_api.utils import get_simple_salesforce_connection
 from cumulusci.core.config.util import get_devhub_config
 from cumulusci.core.dependencies.utils import TaskContext
-from cumulusci.core.utils import process_bool_arg, process_list_arg
+from cumulusci.core.utils import process_bool_arg
 from cumulusci.core.config import TaskConfig
 import pprint as pp
 import json
+from tasks.getDependencies import GetDependencies, package_query_fields, PackageVersion, PackageDependency
 
 install_options = copy.deepcopy(InstallPackageVersion.task_options)
 install_options["name"]["required"] = True
 install_options["namespace"]["required"] = False
-
-package_query_fields = [
-    "Id",
-    "Package2.Name",
-    "Name",
-    "SubscriberPackageVersionId",
-    "IsReleased",
-    "ReleaseVersion",
-    "MajorVersion",
-    "MinorVersion",
-    "PatchVersion",
-    "BuildNumber",
-    ]
-# cci task run dx --command "package install --package 'identity-common'" --org idp
-
-
-class PackageVersion(object):
-    def __init__(self, package2VersionRecord):
-        rec = dict(package2VersionRecord)
-        for key in package_query_fields:
-            setattr(self, key, rec[key]) if key in rec.keys() else None
-        self.version = f"{self.MajorVersion}.{self.MinorVersion}.{self.PatchVersion}"
-        if self.BuildNumber is not None:
-            self.version += f".{self.BuildNumber}"
-    
-    def __str__(self):
-        return json.dumps(self.__dict__, indent=4)
-    
-    def __repr__(self):
-        return json.dumps(self.__dict__, indent=4)
-
-class PackageDependency(object):
-    def __init__(self, deps):
-        if "ids" in deps:
-            setattr(self, "ids", deps["ids"])
-            sub_ids = [x['subscriberPackageVersionId'] for x in deps["ids"]]
-            setattr(self, "ids_csv", ",".join(sub_ids))
-                
-        
-    
-    def __str__(self):
-        return json.dumps(self.__dict__, indent=4)
-    
-    def __repr__(self):
-        return json.dumps(self.__dict__, indent=4)
 
 class InstallPackageDeps(BaseSalesforceApiTask):
     task_options = {
@@ -263,64 +217,38 @@ class InstallPackageDeps(BaseSalesforceApiTask):
             
     def _run_task(self):
 
-        if self.query_only:
-            versions = self._query_only()
-            deps = []
-            if len(versions) == 1:
-                deps = self._query_dependencies(versions[0].SubscriberPackageVersionId)
-                self.logger.info(f"Found Dependencies:\n{pp.pformat(deps)}")
-            elif len(versions) > 1:
-                self.logger.info("Multiple versions found, please specify a version")
-            else:
-                self.logger.info("No versions found for package in dev hub")
-                # get deps from sfdx-project.json
-                package = self._get_package_from_packages_by_name(self.options["name"], self.packages)
-                if package is not None:
-                    deps = self._get_deps_from_sfdx_project_package(package)
-            
-            list_of_dep_ids = []
-            for dep in deps:
-                for ids in dep.ids:
-                    list_of_dep_ids.append(ids['subscriberPackageVersionId'])
-
-            uniques = list(set(list_of_dep_ids))
-            self._create_task_for_deps(uniques)
-            
-            return
+        packageName = self.root_package["package"]
+        rootSubscriberId = self._get_subscriber_package_id(packageName)
 
         self.logger.info(f"Getting dependencies for: {self.options["name"]}")
         if self.root_package is None:
             self.logger.info("Main Package Version not found in sfdx-project.json")
             return
-        
-        packageName = self.root_package["package"]
-        rootSubscriberId = self._get_subscriber_package_id(packageName)
-        dependencies = []
-        if rootSubscriberId is None:
-            self.logger.info(f"Subscriber Package Id not found for package: {packageName}")
-            self.logger.info("Assuming package dependencies are in sfdx-project.json")
-            for dep in self.root_package["dependencies"]:
-                self.logger.info(f"Found root package dependency: {dep}")
-                pack = self._get_package_from_packages(dep)
-                if pack is not None:
-                    self.logger.info(f"Found package: {pack}")
-                    dep_alias = self._get_subscriber_package_id(pack["package"])
-                    if dep_alias is not None:
-                        self.logger.info(f"Found Subscriber Package Id: {dep_alias}")
-                        dependencies.union(self._query_dependencies(dep_alias))
-                        for dependency in dependencies:
-                            self.logger.info(f"Found dependency: {dependency['Dependencies']}")
-                    else:
-                        self.logger.info(f"Subscriber Package Id not found for package: {pack['package']}")
-                        pp.pprint(self._query_dev_hub(pack["package"]))
-                else:
-                    self.logger.info(f"Package not found in sfdx-project.json")
-        else:
-            self.logger.info(f"Found Subscriber Package Id: {rootSubscriberId}")
-            dependencies = self._query_dependencies(rootSubscriberId)
 
-        for dependency in dependencies:
-            self.logger.info(f"Found dependency: {dependency['Dependencies']}")
-        return
+        versions = self._query_only()
+        if self.query_only:
+            self.logger.info("Query only mode, not installing")
+            return
         
+        deps = []
+        if len(versions) == 1:
+            deps = self._query_dependencies(versions[0].SubscriberPackageVersionId)
+            self.logger.info(f"Found Dependencies:\n{pp.pformat(deps)}")
+        elif len(versions) > 1:
+            self.logger.info("Multiple versions found, please specify a version")
+        else:
+            self.logger.info("No versions found for package in dev hub")
+            # get deps from sfdx-project.json
+            package = self._get_package_from_packages_by_name(self.options["name"], self.packages)
+            if package is not None:
+                deps = self._get_deps_from_sfdx_project_package(package)
         
+        list_of_dep_ids = []
+        for dep in deps:
+            for ids in dep.ids:
+                list_of_dep_ids.append(ids['subscriberPackageVersionId'])
+
+        uniques = list(set(list_of_dep_ids))
+        self._create_task_for_deps(uniques)
+            
+            return
