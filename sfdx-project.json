@@ -5,58 +5,75 @@
       "default": true
     },
     {
-        "default": false,
-        "path": "identity/common",
-        "package": "identity-common",
-        "versionName": "ver 0.1",
-        "versionNumber": "0.1.0.NEXT",
-        "versionDescription": "Used to test SSO identity"
+      "path": "identity/common",
+      "package": "Identity Common",
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false,
+      "versionDescription": "",
+      "definitionFile": "orgs/idp.json",
+      "dependencies": [
+        {
+          "package": "force-di"
+        }
+      ]
     },
     {
-        "default": false,
-        "path": "identity/idp",
-        "package": "identity-idp",
-        "versionName": "ver 0.1",
-        "versionNumber": "0.1.0.NEXT",
-        "versionDescription": "Identity Provider config (Community IdP ORG)",
-        "dependencies": [
-            {
-                "package": "identity-common",
-                "versionNumber": "0.1.0.LATEST"
-            }
-        ]
+      "path": "identity/idp",
+      "package": "identity-idp",
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false,
+      "versionDescription": "",
+      "definitionFile": "orgs/idp.json",
+      "dependencies": [
+        {
+          "package": "Identity Common",
+          "versionNumber": "0.1.0.LATEST"
+        }
+      ]
     },
     {
-        "default": false,
-        "path": "identity/sp",
-        "package": "identity-sp",
-        "versionName": "ver 0.1",
-        "versionNumber": "0.1.0.NEXT",
-        "versionDescription": "Service Provider config (SSO ORG)",
-        "dependencies": [
-            {
-                "package": "identity-common",
-                "versionNumber": "0.1.0.LATEST"
-            }
-        ]
+      "path": "identity/sp",
+      "package": "identity-sp",
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false,
+      "versionDescription": "",
+      "definitionFile": "orgs/sp.json",
+      "dependencies": [
+        {
+          "package": "Identity Common",
+          "versionNumber": "0.1.0.LATEST"
+        }
+      ]
     },
     {
-        "default": false,
-        "path": "identity/extensions",
-        "package": "identity-extensions",
-        "versionName": "ver 0.1",
-        "versionNumber": "0.1.0.NEXT",
-        "versionDescription": "JIT Handler Extensions Framework",
-        "dependencies": [
-            {
-                "package": "identity-common",
-                "versionNumber": "0.1.0.LATEST"
-            }
-        ]
+      "path": "identity/extensions",
+      "package": "identity-extensions",
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false,
+      "versionDescription": "",
+      "definitionFile": "orgs/idp.json",
+      "dependencies": [
+        {
+          "package": "Identity Common",
+          "versionNumber": "0.1.0.LATEST"
+        }
+      ]
     }
   ],
   "name": "sso",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "59.0"
+  "sourceApiVersion": "59.0",
+  "packageAliases": {
+    "Identity Common": "0Ho82000000000QCAQ",
+    "identity-extensions": "0Ho82000000000VCAQ",
+    "identity-idp": "0Ho82000000000aCAA",
+    "identity-sp": "0Ho82000000000fCAA",
+    "identity-common": "04t820000000S2QAAU",
+    "force-di": "04t820000000S2aAAE"
+  }
 }

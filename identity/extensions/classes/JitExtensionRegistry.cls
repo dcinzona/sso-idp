@@ -9,7 +9,7 @@ public without sharing class JitExtensionRegistry {
                 kExtensions = new List<JitHandlerExtension>();
                 List<ApexTypeImplementor> implementors = [SELECT ClassName, ClassNamespacePrefix
                     FROM ApexTypeImplementor
-                    WHERE InterfaceName = 'JitExtensionInterface' 
+                    WHERE InterfaceName = 'IJitExtension' 
                     and IsConcrete=true];
         
                 for (ApexTypeImplementor implementor : implementors) {

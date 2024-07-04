@@ -1,4 +1,4 @@
-public abstract class JitHandlerExtension implements JitExtensionInterface {
+public abstract class JitHandlerExtension implements IJitExtension {
 
     public Integer sortOrderNumber = 100;
     public static Map<String, Object> defaultContext = new Map<String, Object>();

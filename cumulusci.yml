@@ -15,6 +15,8 @@ orgs:
         sp:
             config_file: orgs/sp.json
 tasks:
+  install_dependencies:
+    class_path: tasks.installPackage.InstallPackageDeps
   list_changes:
     options:
       exclude: '^Profile,^Dashboard,^Report'
