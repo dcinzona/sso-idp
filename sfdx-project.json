@@ -74,6 +74,7 @@
     "identity-idp": "0Ho82000000000aCAA",
     "identity-sp": "0Ho82000000000fCAA",
     "identity-common": "04t820000000S2QAAU",
+    "Identity Common@0.1.0.1": "04t820000000S2QAAU",
     "force-di": "04t820000000S2aAAE"
   }
 }
