@@ -28,6 +28,12 @@ class PrintableObject(ABC):
 
     def __repr__(self):
         return self.__json__()
+    
+    def __getitem__(self, key):
+        for k in self.__dict__.keys():
+            if k.lower() == key.lower():
+                return self.__dict__[k]
+        return self.__dict__[key]
 
 
 class PackageVersion(PrintableObject):
@@ -84,11 +90,10 @@ class SFDXPackage(SFDXPackageBase):
     dependencies: list[SFDXPackageBase]
 
     def __init__(self, package):
-        rec = dict(package)
-        super().__init__(rec)
+        super().__init__(package)
         self.dependencies = []
-        if "dependencies" in rec.keys():
-            self.dependencies = [SFDXPackageBase(x) for x in rec["dependencies"]]
+        if "dependencies" in package.keys():
+            self.dependencies = [SFDXPackageBase(x) for x in package["dependencies"]]
 
     def set_latest_deployed_version(self, version):
         if version is None:

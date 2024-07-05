@@ -15,7 +15,7 @@ orgs:
         sp:
             config_file: orgs/sp.json
 tasks:
-  install_dependencies:
+  install_package:
     class_path: tasks.installPackage.InstallPackageDeps
   get_dependencies:
     class_path: tasks.getDependencies.GetDependencies
